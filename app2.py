@@ -1,9 +1,13 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import cv2
 import numpy as np
 import mediapipe as mp
 import pickle
+
+# Disable GPU (optional, to suppress TensorFlow warnings)
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -110,4 +114,6 @@ def detect_gesture():
         return jsonify({'gesture': 'No hand detected', 'type': 'Error'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Bind to the port specified by Render or default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
